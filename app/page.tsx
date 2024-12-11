@@ -1,7 +1,12 @@
 'use client'
 
 import { generate } from '@pdfme/generator'
-import { Template ,Font } from '@pdfme/common'
+import {
+  Template,
+  Font,
+  getDefaultFont,
+  DEFAULT_FONT_NAME,
+} from '@pdfme/common';
 import React, { useState } from 'react'
 import * as XLSX from 'xlsx'
 import { FileUpload } from '@/components/file-upload'
@@ -11,12 +16,36 @@ import { Progress } from '@/components/ui/progress'
 interface RowData {
   [key: string]: string | undefined
 }
- /* custom font */
-const font: Font = {
-  serif: {
-    data: '/fonts/algerian-regular.ttf',
+
+/* custom font */
+const fontObjList = [
+  {
     fallback: true,
-  }
+    label: 'andalus',
+    url: '/fonts/andalus.ttf',
+  },
+  {
+    fallback: false,
+    label: "algerian-regular",
+    url: "/fonts/algerian-regular.ttf"
+  },
+  {
+    fallback: false,
+    label: DEFAULT_FONT_NAME,
+    data: getDefaultFont()[DEFAULT_FONT_NAME].data,
+  },
+];
+
+/* gets custom font data from url/file */
+export const getFontsData = async () => {
+  const fontDataList = (await Promise.all(
+    fontObjList.map(async (font) => ({
+      ...font,
+      data: font.data || (await fetch(font.url || '').then((res) => res.arrayBuffer())),
+    }))
+  )) as { fallback: boolean; label: string; data: ArrayBuffer }[];
+
+  return fontDataList.reduce((acc, font) => ({ ...acc, [font.label]: font }), {} as Font);
 };
 
 /** Template or data schema */
@@ -27,7 +56,7 @@ const template: Template = {
       {
         name: 'id',
         type: 'text',
-        position: { x: 28, y: 583.5 },
+        position: { x: 28, y: 581.5 },
         width: 200,
         height: 30,
         fontSize: 45,
@@ -41,7 +70,7 @@ const template: Template = {
         height: 100,
         fontSize: 95,
         alignment: 'center',
-        fontName: 'serif',
+        fontName: 'andalus',
 
       },
       {
@@ -61,12 +90,12 @@ const template: Template = {
         height: 100,
         fontSize: 95,
         alignment: 'center',
-        color: 'red',
+        fontColor: "#FF0000",
       },
       {
         name: 'todayDate',
         type: 'text',
-        position: { x: 90, y: 562 },
+        position: { x: 90, y: 560 },
         width: 100,
         height: 10,
         fontSize: 45,
@@ -75,7 +104,7 @@ const template: Template = {
       {
         name: 'startDate',
         type: 'text',
-        position: { x: 56, y: 607 },
+        position: { x: 56, y: 605 },
         width: 100,
         height: 10,
         fontSize: 45,
@@ -84,7 +113,7 @@ const template: Template = {
       {
         name: 'endDate',
         type: 'text',
-        position: { x: 181, y: 607 },
+        position: { x: 181, y: 605 },
         width: 100,
         height: 10,
         fontSize: 45,
@@ -133,6 +162,7 @@ export default function Home() {
 
   const generatePDF = async (row: RowData): Promise<Blob> => {
     const todayDate = formatDate(new Date())
+    const font = await getFontsData();
     const inputs = [{
       id: getData(row, 'id'),
       name: getData(row, 'name'),
