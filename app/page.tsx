@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx'
 import { FileUpload } from '@/components/file-upload'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+//import { ZodString } from 'zod';
 
 interface RowData {
   [key: string]: string | undefined
@@ -130,6 +131,7 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
   const [fileName, setFileName] = useState<string | null>(null)
+  const [newinput, setNewinput] = useState("");
 
   const processExcelFile = async (file: File) => {
     try {
@@ -171,6 +173,7 @@ export default function Home() {
       todayDate: todayDate,
       startDate: getData(row, 'startDate'),
       endDate: getData(row, 'endDate'),
+      x: newinput,
     }]
 
     const pdf = await generate({ template, inputs, options: { font } })
@@ -233,6 +236,32 @@ export default function Home() {
       {!isGenerating && rowsData.length > 0 && (
         <p className='mt-4'>Total rows: {rowsData.length}</p>
       )}
+
+      <input
+      value={newinput}
+      onChange={e => setNewinput(e.target.value)}>
+      
+      </input>
+
+      <Button onClick={()=>{
+        const newfield = {
+          
+            name: 'x',
+            type: 'text',
+            position: { x: 90, y: 500.5 },
+            width: 200,
+            height: 30,
+            fontSize: 45,
+            alignment: 'left',
+          };
+          if(template.schemas.length ===0){
+            template.schemas.push([]);
+          }
+            template.schemas[0].push(newfield);
+        
+      }}>
+        Add field
+      </Button>
     </div>
   )
 }
