@@ -191,7 +191,7 @@ export default function Home() {
     for (let i = 0; i < rowsData.length; i++) {
       try {
         const pdfBlob = await generatePDF(rowsData[i])
-        const fileName = `diploma_${getData(rowsData[i], 'id')}.pdf`
+        const fileName = `diploma_${getData(rowsData[i], 'name')}${'_'+getData(rowsData[i], 'diploma')}.pdf`
         const link = document.createElement('a')
         link.href = URL.createObjectURL(pdfBlob)
         link.download = fileName
