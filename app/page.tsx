@@ -18,6 +18,17 @@ interface RowData {
   [key: string]: string | undefined
 }
 
+interface InputData {
+  id: string;
+  name: string;
+  birthDate: string;
+  diploma: string;
+  todayDate: string;
+  startDate: string;
+  endDate: string;
+  [key: string]: string; // This allows for additional string properties
+}
+
 /* custom font */
 const fontObjList = [
   {
@@ -124,6 +135,8 @@ const template: Template = {
     ],
   ],
 }
+const inputs: InputData[] =[];
+
 
 export default function Home() {
 
@@ -131,7 +144,18 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
   const [fileName, setFileName] = useState<string | null>(null)
-  const [newinput, setNewinput] = useState("");
+
+  /*for dynamic field addition */
+  const [content, setContent] = useState('');
+  const [posy, setPosy] = useState(0);
+  const [posx, setPosx] = useState(0);
+  const [fieldname, setFieldname] = useState('');
+  const [fontsize, setFontSize] = useState(0);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [fontcolor, setFontColor] = useState('');
+  const [alignment, setAlignment] = useState('');
+
 
   const processExcelFile = async (file: File) => {
     try {
@@ -165,7 +189,7 @@ export default function Home() {
   const generatePDF = async (row: RowData): Promise<Blob> => {
     const todayDate = formatDate(new Date())
     const font = await getFontsData();
-    const inputs = [{
+    inputs[0]=({
       id: getData(row, 'id'),
       name: getData(row, 'name'),
       birthDate: getData(row, 'birthDate'),
@@ -173,11 +197,15 @@ export default function Home() {
       todayDate: todayDate,
       startDate: getData(row, 'startDate'),
       endDate: getData(row, 'endDate'),
-      x: newinput,
-    }]
+    });
+              inputs[0][fieldname] = content;
+
+    
+  console.log(inputs)
 
     const pdf = await generate({ template, inputs, options: { font } })
-    return new Blob([pdf.buffer], { type: 'application/pdf' })
+    const uint8Array = new Uint8Array(pdf.buffer);
+    return new Blob([uint8Array], { type: 'application/pdf' })
   }
 
   const handleGenerateAll = async () => {
@@ -237,32 +265,143 @@ export default function Home() {
         <p className='mt-4'>Total rows: {rowsData.length}</p>
       )}
 
-      <input
-      value={newinput}
-      onChange={e => setNewinput(e.target.value)}>
-      
-      </input>
+      <div className='mt-4 mb-4 w-full max-w-xs'>
+        <h1 className='text-center block text-gray-700 text-sm font-bold mb-2'>Add fields </h1>
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Field Name :
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name='name'
+            type='text'
+            value={fieldname}
+            onChange={e => setFieldname(e.target.value)}
+          />
+        </label>
 
-      <Button onClick={()=>{
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Field content :
+          <input
+            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            name='content'
+            type='text'
+            value={content}
+            onChange={e => setContent(e.target.value)}
+          />
+        </label>
+
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Y Position :
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name='pos y'
+            type='number'
+            value={posy}
+            onChange={e => setPosy(+e.target.value)}
+          />
+        </label>
+
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          X position :
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name='pos x'
+            type='number'
+            value={posx}
+            onChange={e => setPosx(+e.target.value)}
+          />
+        </label>
+
+
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          width :
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name='input'
+            type='number'
+            value={width}
+            onChange={e => setWidth(+e.target.value)}
+          />
+        </label>
+
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          height :
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name='height'
+            type='number'
+            value={height}
+            onChange={e => setHeight(+e.target.value)}
+          />
+        </label>
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          font size :
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name='font size'
+            type='number'
+            value={fontsize}
+            onChange={e => setFontSize(+e.target.value)}
+          />
+        </label>
+
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          alignment :
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name='alignment'
+            type='text'
+            value={alignment}
+            onChange={e => setAlignment(e.target.value)}
+          />
+        </label>
+
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Font color :
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name='Font color'
+            type='text'
+            value={fontcolor}
+            onChange={e => setFontColor(e.target.value)}
+          />
+        </label>
+      </div>
+
+      <Button onClick={() => {
         const newfield = {
-          
-            name: 'x',
-            type: 'text',
-            position: { x: 90, y: 500.5 },
-            width: 200,
-            height: 30,
-            fontSize: 45,
-            alignment: 'left',
-          };
-          if(template.schemas.length ===0){
-            template.schemas.push([]);
-          }
-            template.schemas[0].push(newfield);
+
+          name: fieldname,
+          type: 'text',
+          position: { x: posx, y: posy },
+          width: width,
+          height: height,
+          fontSize: fontsize,
+          alignment: alignment,
+          fontColor: fontcolor,
+        };
+        if (template.schemas.length === 0) {
+          template.schemas.push([]);
+        }
+        template.schemas[0].push(newfield);
         
+// Add the new field dynamically if it exists
+if (inputs.length === 0) {
+  inputs.push({id: "",
+    name: "",
+    birthDate: "",
+    diploma: "",
+    todayDate: "",
+    startDate: "",
+    endDate: "",});
+}
+if (fieldname && content ) {
+  inputs[0][fieldname] = content;
+  console.log(inputs);
+}
       }}>
         Add field
       </Button>
-    </div>
+    </div >
   )
 }
 
