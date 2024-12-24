@@ -1,17 +1,14 @@
 'use client'
 
 import { generate } from '@pdfme/generator'
-import {
-  Template,
-  Font,
-  getDefaultFont,
-  DEFAULT_FONT_NAME,
-} from '@pdfme/common';
+import {Template,} from '@pdfme/common';
 import React, { useState } from 'react'
 import * as XLSX from 'xlsx'
 import { FileUpload } from '@/components/file-upload'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+import { getFontsData } from './utils/fonts'
+
 //import { ZodString } from 'zod';
 
 interface RowData {
@@ -30,35 +27,9 @@ interface InputData {
 }
 
 /* custom font */
-const fontObjList = [
-  {
-    fallback: true,
-    label: 'andalus',
-    url: '/fonts/andalus.ttf',
-  },
-  {
-    fallback: false,
-    label: "algerian-regular",
-    url: "/fonts/algerian-regular.ttf"
-  },
-  {
-    fallback: false,
-    label: DEFAULT_FONT_NAME,
-    data: getDefaultFont()[DEFAULT_FONT_NAME].data,
-  },
-];
 
-/* gets custom font data from url/file */
-export const getFontsData = async () => {
-  const fontDataList = (await Promise.all(
-    fontObjList.map(async (font) => ({
-      ...font,
-      data: font.data || (await fetch(font.url || '').then((res) => res.arrayBuffer())),
-    }))
-  )) as { fallback: boolean; label: string; data: ArrayBuffer }[];
 
-  return fontDataList.reduce((acc, font) => ({ ...acc, [font.label]: font }), {} as Font);
-};
+
 
 /** Template or data schema */
 const template: Template = {
