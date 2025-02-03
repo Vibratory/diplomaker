@@ -39,7 +39,7 @@ const template: Template = {
       {
         name: 'id',
         type: 'text',
-        position: { x: 28, y: 581.5 },
+        position: { x: 60, y: 447.5 },
         width: 200,
         height: 30,
         fontSize: 45,
@@ -48,7 +48,7 @@ const template: Template = {
       {
         name: 'name',
         type: 'text',
-        position: { x: 100, y: 260 },
+        position: { x: 11, y: 220 },
         width: 700,
         height: 100,
         fontSize: 95,
@@ -59,7 +59,7 @@ const template: Template = {
       {
         name: 'birthDate',
         type: 'text',
-        position: { x: 255, y: 310 },
+        position: { x: 155, y: 260 },
         width: 400,
         height: 100,
         fontSize: 95,
@@ -78,7 +78,7 @@ const template: Template = {
       {
         name: 'todayDate',
         type: 'text',
-        position: { x: 90, y: 560 },
+        position: { x: 0, y: 0 },
         width: 100,
         height: 10,
         fontSize: 45,
@@ -87,19 +87,19 @@ const template: Template = {
       {
         name: 'startDate',
         type: 'text',
-        position: { x: 56, y: 605 },
+        position: { x: 76, y: 465 },
         width: 100,
         height: 10,
-        fontSize: 45,
+        fontSize: 40,
         alignment: 'left',
       },
       {
         name: 'endDate',
         type: 'text',
-        position: { x: 181, y: 605 },
+        position: { x: 175, y: 465 },
         width: 100,
         height: 10,
-        fontSize: 45,
+        fontSize: 40,
         alignment: 'left',
       },
 
@@ -158,7 +158,7 @@ export default function Home() {
   }
 
   const generatePDF = async (row: RowData): Promise<Blob> => {
-    const todayDate = formatDate(new Date())
+    const todayDate = ""//formatDate(new Date())
     const font = await getFontsData();
     inputs[0]=({
       id: getData(row, 'id'),
