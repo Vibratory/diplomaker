@@ -39,6 +39,81 @@ const template: Template = {
       {
         name: 'id',
         type: 'text',
+        position: { x: 34, y: 581.5 },
+        width: 200,
+        height: 30,
+        fontSize: 45,
+        alignment: 'left',
+      },
+      {
+        name: 'name',
+        type: 'text',
+        position: { x: 106, y: 259 },
+        width: 700,
+        height: 100,
+        fontSize: 95,
+        alignment: 'center',
+        fontName: 'andalus',
+
+      },
+      {
+        name: 'birthDate',
+        type: 'text',
+        position: { x: 262, y: 302 },
+        width: 400,
+        height: 100,
+        fontSize: 95,
+        alignment: 'center',
+      },
+      {
+        name: 'diploma',
+        type: 'text',
+        position: { x: 255, y: 390 },
+        width: 400,
+        height: 100,
+        fontSize: 95,
+        alignment: 'center',
+        fontColor: "#FF0000",
+      },
+      {
+        name: 'todayDate',
+        type: 'text',
+        position: { x: 85, y: 560 },
+        width: 100,
+        height: 10,
+        fontSize: 45,
+        alignment: 'left',
+      },
+      {
+        name: 'startDate',
+        type: 'text',
+        position: { x: 62, y: 604 },
+        width: 100,
+        height: 10,
+        fontSize: 45,
+        alignment: 'left',
+      },
+      {
+        name: 'endDate',
+        type: 'text',
+        position: { x: 185, y: 604 },
+        width: 100,
+        height: 10,
+        fontSize: 45,
+        alignment: 'left',
+      },
+
+    ],
+  ],
+}
+/* for first aid *
+*const template: Template = {
+  basePdf: '/Template.pdf',
+  schemas: [
+    [
+      {
+        name: 'id',
+        type: 'text',
         position: { x: 60, y: 447.5 },
         width: 200,
         height: 30,
@@ -105,7 +180,7 @@ const template: Template = {
 
     ],
   ],
-}
+} */
 const inputs: InputData[] =[];
 
 
@@ -149,16 +224,16 @@ export default function Home() {
     return ''
   }
 
-  /*const formatDate = (date: Date): string => {
+const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     }).replace(/\//g, '/')
-  }*/
+  }
 
   const generatePDF = async (row: RowData): Promise<Blob> => {
-    const todayDate = ""//formatDate(new Date())
+    const todayDate = formatDate(new Date())
     const font = await getFontsData();
     inputs[0]=({
       id: getData(row, 'id'),
@@ -166,8 +241,8 @@ export default function Home() {
       birthDate: getData(row, 'birthDate'),
       diploma: getData(row, 'diploma'),
       todayDate: todayDate,
-      startDate: getData(row, 'startDate'),
-      endDate: getData(row, 'endDate'),
+      startDate: getData(row, 'startDate').toString(),
+      endDate: getData(row, 'endDate').toString(),
     });
               inputs[0][fieldname] = content;
 
@@ -191,7 +266,7 @@ export default function Home() {
     for (let i = 0; i < rowsData.length; i++) {
       try {
         const pdfBlob = await generatePDF(rowsData[i])
-        const fileName = `diploma_${getData(rowsData[i], 'name')}${'_'+getData(rowsData[i], 'diploma')}.pdf`
+        const fileName = `Diploma_${getData(rowsData[i], 'name')}${'_'+getData(rowsData[i], 'diploma')}.pdf`
         const link = document.createElement('a')
         link.href = URL.createObjectURL(pdfBlob)
         link.download = fileName
@@ -210,7 +285,7 @@ export default function Home() {
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-center bg-slate-100 p-4'>
-      <h1 className='text-4xl font-bold mb-8'>Welcome to DIPLOMAKER</h1>
+      <h1 className='text-4xl font-bold '>Welcome to DIPLOMAKER </h1><p className='mb-8 text-l '>by Adnane</p>
       <div className='w-full max-w-md mb-4'>
         <FileUpload onFileUpload={processExcelFile} />
         {fileName && (
