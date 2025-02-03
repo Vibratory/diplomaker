@@ -149,13 +149,13 @@ export default function Home() {
     return ''
   }
 
-  const formatDate = (date: Date): string => {
+  /*const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     }).replace(/\//g, '/')
-  }
+  }*/
 
   const generatePDF = async (row: RowData): Promise<Blob> => {
     const todayDate = ""//formatDate(new Date())
